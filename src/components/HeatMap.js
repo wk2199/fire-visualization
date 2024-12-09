@@ -222,13 +222,13 @@ const HeatMap = ({ data }) => {
           <>
             <PieChart 
       data={data.filter(d => d.state === selectedData.state && d.fire_year === selectedData.fire_year)} 
-      selectedstate={selectedData.state} 
-      selectedyear={selectedData.fire_year} 
+      selectedState={selectedData.state} 
+      selectedYear={selectedData.fire_year} 
     />
             <BarChart 
       data={data.filter(d => d.state === selectedData.state && d.fire_year === selectedData.fire_year)} 
-      selectedstate={selectedData.state} 
-      selectedyear={selectedData.fire_year} 
+      selectedState={selectedData.state} 
+      selectedYear={selectedData.fire_year} 
     />
           </>
           
