@@ -8,20 +8,20 @@ const BarChart = ({ data, selectedState, selectedYear }) => {
     if (!data || !Array.isArray(data) || data.length === 0) return;
 
     // 1. 过滤出对应州和年份的数据
-    const filteredData = data
+    const filteredData = data;
     if (filteredData.length === 0) return;
 
     console.log("Filtered data:", filteredData); // 查看过滤后的数据
 
     // 2. 聚合每个月的火灾数量
     const monthlyData = filteredData.reduce((acc, d) => {
-      const month = Math.ceil(d.disc_doy / 31);  // 使用 disc_day 除以 31 向上取整来计算月份
-      if (month < 1 || month > 12) return acc;  // 排除无效月份
+      const month = Math.ceil(d.disc_doy / 31); // 使用 disc_day 除以 31 向上取整来计算月份
+      if (month < 1 || month > 12) return acc; // 排除无效月份
 
       if (!acc[month]) {
         acc[month] = 0; // 如果该月没有记录，则初始化为 0
       }
-      acc[month] += 1;  // 每次遇到该月的记录，计数加 1
+      acc[month] += 1; // 每次遇到该月的记录，计数加 1
       return acc;
     }, {});
 
@@ -32,17 +32,17 @@ const BarChart = ({ data, selectedState, selectedYear }) => {
     for (let month = 1; month <= 12; month++) {
       completeMonthlyData.push({
         month,
-        count: monthlyData[month] || 0  // 如果该月没有火灾记录，则设置为 0
+        count: monthlyData[month] || 0 // 如果该月没有火灾记录，则设置为 0
       });
     }
 
     // 4. 设置SVG画布尺寸和比例尺
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();  // 清除旧的图表
+    svg.selectAll('*').remove(); // 清除旧的图表
 
     const width = 500;
     const height = 300;
-    const margin = { top: 20, right: 30, bottom: 40, left: 60 };  // 增加左边的 margin
+    const margin = { top: 50, right: 30, bottom: 40, left: 60 }; // 增加顶部的 margin 为标题预留空间
 
     const xScale = d3.scaleBand()
       .domain(completeMonthlyData.map(d => d.month))
@@ -72,7 +72,7 @@ const BarChart = ({ data, selectedState, selectedYear }) => {
       .attr('y', d => yScale(d.count))
       .attr('width', xScale.bandwidth())
       .attr('height', d => height - margin.bottom - yScale(d.count))
-      .attr('fill', 'blue');  // 修改为蓝色
+      .attr('fill', 'blue'); // 修改为蓝色
 
     // 7. 添加X轴
     svg.append('g')
@@ -90,6 +90,15 @@ const BarChart = ({ data, selectedState, selectedYear }) => {
     svg.append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(yScale));
+
+    // 9. 添加标题
+    svg.append('text')
+      .attr('x', width / 2)
+      .attr('y', margin.top / 2) // 标题放置在顶部 margin 中间
+      .attr('text-anchor', 'middle')
+      .style('font-size', '16px')
+      .style('font-weight', 'bold')
+      .text(`Monthly Fire Frequency for ${selectedState} in ${selectedYear}`);
 
   }, [data, selectedState, selectedYear]);
 
